@@ -1,0 +1,19 @@
+# API Framework
+fastapi
+uvicorn
+pydantic
+python-dotenv
+python-multipart
+
+# Agent Framework
+langchain
+langchain-experimental
+langchain-core
+langchain-community
+langchain-openai
+langchain-anthropic
+langchain-google-genai
+langgraph
+
+# CORS
+fastapi-cors
