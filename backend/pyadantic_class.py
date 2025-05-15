@@ -1,5 +1,6 @@
 from pydantic import BaseModel,Field
-class chatbot(BaseModel):
-    query : str = Field(...,description="Query to be sent to the chatbot")
-    model : str = Field(...,description="Model to be used for generating the reply")
-    response : str = Field(...,description="Response from the chatbot")
+from langgraph.graph import MessagesState
+class AgentState(BaseModel): 
+    query: str = Field(description="Query to be sent to the chatbot", default=" ")
+    model: str = Field(description="Model to be used for generating the reply", default="gemini")
+    response: str = Field(description="Response from the llm in savage and harvy tone", default=" ")

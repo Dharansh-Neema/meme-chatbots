@@ -2,14 +2,11 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pyadantic_class import AgentState
 from dotenv import load_dotenv
-from typing import Optional
+from graph_flow import chatbot_resposne
 import uvicorn
 
-# Import services (to be implemented)
-from app.services.agent_service import enhance_prompt
-from app.services.image_service import generate_image
-from app.core.config import settings
 
 # Load environment variables
 load_dotenv()
@@ -32,48 +29,30 @@ app.add_middleware(
 
 # Define request and response models
 class MemeRequest(BaseModel):
-    prompt: str
-    style: Optional[str] = None
-    model: Optional[str] = "default"  # default, flux, dalle, gemini, ideogram
+    query: str
 
-class MemeResponse(BaseModel):
-    original_prompt: str
-    enhanced_prompt: str
-    image_url: str
-    model_used: str
+
 
 # Define routes
 @app.get("/")
 async def root():
     return {"message": "Welcome to Meme Chatbot API"}
 
-@app.post("/generate-meme", response_model=MemeResponse)
-async def create_meme(request: MemeRequest):
+@app.post("/generate-response")
+async def create_meme(request: AgentState):
     try:
-        # Enhance the prompt using LangGraph agent
-        enhanced_prompt = await enhance_prompt(request.prompt, request.style)
-        
-        # Generate image using the selected model
-        image_url = await generate_image(enhanced_prompt, request.model)
-        
-        return MemeResponse(
-            original_prompt=request.prompt,
-            enhanced_prompt=enhanced_prompt,
-            image_url=image_url,
-            model_used=request.model
-        )
+        response = chatbot_resposne(request)
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+
 
 # Run the application
 if __name__ == "__main__":
     uvicorn.run(
         "main:app", 
-        host=settings.HOST, 
-        port=settings.PORT,
-        reload=settings.DEBUG
+        host="0.0.0.0", 
+        port=8000,
+        reload=True
     )

@@ -4,8 +4,8 @@ from logging.handlers import RotatingFileHandler
 
 def setup_logger(
     name: str = "chatbot",
-    log_file: str = "chatbot.log",
-    level: int = logging.DEBUG
+    log_file: str = "logs/chatbot.log",
+    level: str = "INFO"
 ):
     logger = logging.getLogger(name)
     logger.setLevel(level)
