@@ -68,7 +68,9 @@ def chatbot_resposne(state:AgentState):
         llm = get_gemini_llm()
         prompt = chatbot_prompt.format(query=state.query)
         response = llm.invoke(prompt)
-        state.response = response.content.upper()
+        res = response.content.upper()
+        res = res.replace("**", "")
+        state.response = res
         return state
     except Exception as e:
         print(f"Failed to generate response: {str(e)}")
